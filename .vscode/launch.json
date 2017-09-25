@@ -13,7 +13,7 @@
                 "${workspaceRoot}/dist/**/*.js"
             ],
             "args": [
-                "--day=201709",
+                "--month=201709",
                 "--to=1q0lGO0LJi9blOKVi6ocXcuqEfzA3Nly1MP0aqfCvvWA"
             ],
             "preLaunchTask": "tsc"
