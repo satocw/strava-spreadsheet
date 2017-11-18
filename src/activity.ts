@@ -6,6 +6,10 @@ export function createFrom(data: string): Activity {
   return createActivity(file);
 }
 
+export function calcHeartRate(activity: Activity) {
+
+}
+
 function createActivity(file: CheerioStatic): Activity {
   let activity: Activity = {
     start_time: null,
@@ -101,6 +105,9 @@ function createLap(lapNode: CheerioStatic): Lap {
 function calculateAscDsc(tracks: Track[]) {
   let ascend = 0, descend = 0;
   tracks.reduce((prev, curr) => {
+    if (curr.altitude === 0 || prev.altitude === 0) { // GPSが取得できていなかったような場合
+      return curr;
+    }
     const elev = curr.altitude - prev.altitude;
     if (elev > 0) {
       ascend += elev;

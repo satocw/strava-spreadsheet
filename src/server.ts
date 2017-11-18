@@ -2,30 +2,34 @@ import { SpreadSheet } from "./google-spread-sheet";
 import * as fileLoader from './file-loader';
 import * as activity from './activity';
 
-class Server {
+export class Server {
 
     private month = '';   // 対象とするtcxファイルの範囲。例；201709
+    private file = '';    // 対象とするファイルの名前。
+
     private docId = ''; // 書き込むスプレッドシートのID
 
     constructor() {
-        this.prepare();
+        this.prepare(process.argv);
         this.loadFiles();
         // this.spreadsheet();
     }
 
-    private prepare() {
-        const args = process.argv;
-        console.dir(args)
+    private prepare(args: string[]) {
+        console.dir(args);
         args.forEach(arg => {
             if (arg.indexOf('--month') > -1) {
                  this.month = arg.split('=')[1];
+            }
+            if (arg.indexOf('--file') > -1) {
+                this.file = arg.split('=')[1];
             }
             if (arg.indexOf('--to') > -1) {
                 this.docId = arg.split('=')[1];
             }    
         });
 
-        if (!this.month || !this.docId) {
+        if ((!this.month && !this.file) || !this.docId) {
             throw new Error('Not enough arguments are passed!');
         }
     }
