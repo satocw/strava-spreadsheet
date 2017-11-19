@@ -43,3 +43,4 @@ Thumbs.db
 src/**/*.js
 
 google-generated-creds.json
+*.tcx

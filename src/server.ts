@@ -1,54 +1,56 @@
-import { SpreadSheet } from "./google-spread-sheet";
-import * as fileLoader from './file-loader';
-import * as activity from './activity';
+import * as bodyParser from 'body-parser';
+import * as express from 'express';
+import * as path from 'path';
+import * as http from 'http';
 
-export class Server {
+import { IndexApi } from "./api/index";
 
-    private month = '';   // 対象とするtcxファイルの範囲。例；201709
-    private file = '';    // 対象とするファイルの名前。
+const PORT = 3000;
 
-    private docId = ''; // 書き込むスプレッドシートのID
+class Server {
+
+    public app: express.Application;
 
     constructor() {
-        this.prepare(process.argv);
-        this.loadFiles();
-        // this.spreadsheet();
+        this.app = express();
+
+        this.config();
+
+        this.api();
     }
 
-    private prepare(args: string[]) {
-        console.dir(args);
-        args.forEach(arg => {
-            if (arg.indexOf('--month') > -1) {
-                 this.month = arg.split('=')[1];
-            }
-            if (arg.indexOf('--file') > -1) {
-                this.file = arg.split('=')[1];
-            }
-            if (arg.indexOf('--to') > -1) {
-                this.docId = arg.split('=')[1];
-            }    
-        });
-
-        if ((!this.month && !this.file) || !this.docId) {
-            throw new Error('Not enough arguments are passed!');
-        }
+    private api() {
+        const apiRouter = express.Router();
+        new IndexApi(apiRouter);
+        this.app.use('/api', apiRouter);
     }
 
-    private loadFiles() {
-        fileLoader.loadFiles(this.month, '.tcx')
-            .subscribe(data => {
-                const act = activity.createFrom(data)
-                console.log(act);
-            });
+    private config() {
+        this.app.set("port", PORT);
+
+        this.app.use(express.static(path.join(__dirname, "public")));
+
+        this.app.set("views", path.join(__dirname, "../views"));
+        this.app.set("view engine", "pug");
+
+        this.app.use(bodyParser.json());
+        this.app.use(bodyParser.urlencoded({ extended: true }));
+
+        this.app.set('json spaces', 2);
+        
+		//catch 404 and forward to error handler
+		this.app.use(function(err: any, req: express.Request, res: express.Response, next: express.NextFunction) {
+			err.status = 404;
+			next(err);
+		});
     }
 
-    private async spreadsheet() {
-        const s = new SpreadSheet(this.docId);
-        await s.setAuth();
-        s.getMonthlySheet(9).then(sheet => {
-            s.setHeaders(sheet);
-        });
+    public static start() {
+        const server = new Server();
+        const httpServer = http.createServer(server.app)
+        httpServer.listen(PORT);
+        httpServer.on("listening", () => { console.log('Server started...') });
     }
 }
 
-const server = new Server();
+Server.start();
