@@ -5,6 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./dist/server.js",
+    "prestart": "npm run clean && npm run build",
+    "clean": "rimraf ./dist",
+    "build": "tsc -p src/tsconfig.json",
     "gc": "node ./dist/garmin-connect.service.js",
     "test": "jasmine"
   },
@@ -19,7 +22,7 @@
     "pug": "^2.0.0-rc.4",
     "request": "^2.83.0",
     "request-promise-native": "^1.0.5",
-    "rxjs": "^5.4.3"
+    "rxjs": "5.4.3"
   },
   "devDependencies": {
     "@types/body-parser": "^1.16.8",
@@ -30,6 +33,7 @@
     "@types/request": "^2.0.8",
     "@types/request-promise-native": "^1.0.10",
     "jasmine": "^2.8.0",
-    "typescript": "^2.5.2"
+    "rimraf": "^2.6.2",
+    "typescript": "2.4.2"
   }
 }
