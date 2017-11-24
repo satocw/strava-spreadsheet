@@ -1,7 +1,8 @@
 import { Router, Request, Response } from 'express';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as gc from "../garmin-connect.service";
+import * as gc from '../garmin-connect.service';
+import * as ss from '../google-spread-sheet.service';
 
 export class IndexApi {
 
@@ -11,8 +12,9 @@ export class IndexApi {
         router.get('/gc/session', _this.getSession.bind(_this));
         router.get('/gc/activities', _this.GetSummaryOfActivities.bind(_this));
         router.get('/gc/activity/:activityId', _this.DownloadActivity.bind(_this));
-
         // router.get('/gc/save/:activityId', this._saveActivity);
+
+        router.get('/ss/read', _this.ReadSpreadSheet.bind(_this));
     }
 
     private getRoot(req: any, res: any) {
@@ -47,6 +49,16 @@ export class IndexApi {
         }
         else {
             return fs.writeFileSync(filepath, contents, {encoding: 'utf8'});
+        }
+    }
+
+    private ReadSpreadSheet(req: Request, res: Response) {
+        try {
+            // ss.readFile();
+            res.send('Read SpreadSheet OK');
+        }
+        catch(err) {
+            res.status(500).send(err);
         }
     }
 

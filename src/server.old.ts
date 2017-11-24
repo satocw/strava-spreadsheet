@@ -1,4 +1,4 @@
-import { SpreadSheet } from "./google-spread-sheet";
+import { SpreadSheet } from "./google-spread-sheet.old";
 import * as fileLoader from './file-loader';
 import * as activity from './activity';
 
