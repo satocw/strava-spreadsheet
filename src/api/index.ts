@@ -3,6 +3,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as gc from '../garmin-connect.service';
 import * as ss from '../google-spread-sheet.service';
+import * as tcx from "../file-loader";
+import * as activity from "../activity";
 
 export class IndexApi {
 
@@ -15,6 +17,10 @@ export class IndexApi {
         // router.get('/gc/save/:activityId', this._saveActivity);
 
         router.get('/ss/read', _this.ReadSpreadSheet.bind(_this));
+        router.get('/ss/read2', _this.ReadSpreadSheetWithCredential.bind(_this));
+        router.get('/ss/post-auth', _this.GetPostAuth.bind(_this));
+
+        router.get('/tcx/load/:activityId', _this.LoadActivity.bind(_this));        
     }
 
     private getRoot(req: any, res: any) {
@@ -52,14 +58,41 @@ export class IndexApi {
         }
     }
 
-    private ReadSpreadSheet(req: Request, res: Response) {
+    private async ReadSpreadSheet(req: Request, res: Response) {
         try {
-            // ss.readFile();
-            res.send('Read SpreadSheet OK');
+            let result = await ss.readFile();
+            // res.redirect(result+'');
+            res.send(result || 'Read SpreadSheet OK');
         }
         catch(err) {
             res.status(500).send(err);
         }
+    }
+
+    private async ReadSpreadSheetWithCredential(req: Request, res: Response) {
+        const code = req.query.code;
+        if (!code){
+            res.status(500).send('Unexpected request: Code is required');
+            return;
+        }
+        let token = ss.getToken(code);
+        res.send(token || 'Get Token OK');
+    }
+
+    private GetPostAuth(req: Request, res: Response) {
+        console.log(req.query);
+        res.send('GetPostAuth');
+    }
+
+    private LoadActivity(req: Request, res: Response) {
+        const id = req.params.activityId;
+        const filepath = path.join(__dirname, '../../data', id) + '.tcx';
+        tcx.loadOneFile(filepath).take(1).subscribe(str => {
+            const data = activity.createFrom(str);
+            res.json(data);
+        }, (err) => {
+            res.status(500).send(err);
+        });
     }
 
     private async _saveActivity(req: Request, res: Response) {
