@@ -4,6 +4,7 @@ import * as request from "request-promise-native";
 var google = require('googleapis');
 var googleAuth = require('google-auth-library');
 var sheets = google.sheets('v4');
+import { title as ssTitle, headerCell as ssHeaderCell } from './google-spread-sheet.value';
 
 // If modifying these scopes, delete your previously saved credentials
 // at ~/.credentials/sheets.googleapis.activity-archiver.json
@@ -40,6 +41,155 @@ export class GoogleSpreadSheetService {
     else {
       return this.getNewToken();
     }
+  }
+
+  public async getData() {
+    if (!this.oauth2Client) {
+      const result = await this.setAuth();
+      if (typeof result === 'string') {
+        return result;
+      }
+    }
+    return new Promise((resolve, reject) => {
+      sheets.spreadsheets.get({
+        auth: this.oauth2Client,
+        spreadsheetId: this.spreadSheetId,
+        includeGridData: true,
+        ranges: [
+          "Sheet1!A1:D2"
+        ]
+      }, (err, response) => {
+        if (err) {
+          console.log('The API returned an error: ' + err);
+          reject(err);
+        }
+        resolve(response);
+      });
+    });
+  }
+
+  public async createFrames() {
+    if (!this.oauth2Client) {
+      const result = await this.setAuth();
+      if (typeof result === 'string') {
+        return result;
+      }
+    }
+    sheets.spreadsheets.batchUpdate({
+      auth: this.oauth2Client,
+      spreadsheetId: this.spreadSheetId,
+      resource: {
+        requests: [
+          {
+            "updateCells": {
+              "start": {
+                  "sheetId": 0,
+                  "rowIndex": 0,
+                  "columnIndex": 0
+              },
+              "rows": [
+                {
+                  "values": [
+                    ssTitle("12月")
+                  ],
+                },
+                {
+                  "values": [
+                    ssHeaderCell("日"),
+                    ssHeaderCell("曜日"),
+                    ssHeaderCell("種類"),
+                    ssHeaderCell("強度"),
+                    ssHeaderCell("内容"),
+                    ssHeaderCell("開始時刻"),
+                    ssHeaderCell("時間"),
+                    ssHeaderCell("距離"),
+                    ssHeaderCell("Asc"),
+                    ssHeaderCell("場所"),
+                    ssHeaderCell("人"),
+                    ssHeaderCell("HR~100"),
+                    ssHeaderCell("100"),
+                    ssHeaderCell("110"),
+                    ssHeaderCell("120"),
+                    ssHeaderCell("130"),
+                    ssHeaderCell("140"),
+                    ssHeaderCell("150"),
+                    ssHeaderCell("160"),
+                    ssHeaderCell("170"),
+                    ssHeaderCell("180"),
+                    ssHeaderCell("190"),
+                    ssHeaderCell("190~"),
+                    ssHeaderCell("メモ")
+                  ]
+                },
+                {
+                  "values": [
+                    {
+                      "userEnteredValue": {
+                        "numberValue": "11"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "values": [
+                    {
+                      "userEnteredValue": {
+                        "numberValue": "12"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "fields": "*"
+            }
+          }
+        ]
+      }
+    }, (err, response) => {
+      if (err) {
+        console.log('The API returned an error: ' + err);
+        return;
+      }
+    });
+  }
+
+  /** Not Currently Used */
+  public async writeData_Simple() {
+    if (!this.oauth2Client) {
+      const result = await this.setAuth();
+      if (typeof result === 'string') {
+        return result;
+      }
+    }
+    sheets.spreadsheets.values.batchUpdate({
+      auth: this.oauth2Client,
+      spreadsheetId: this.spreadSheetId,
+      resource: {
+        data: [
+          {
+            "range": "Sheet1!A2:X2",
+            "values": [
+              [
+                "日","曜日","種類","強度","内容","開始時刻","時間","距離","Asc","場所","人","HR~100","100","110","120","130","140","150",
+                "160","170","180","190","190~","メモ"
+              ]
+            ]
+          },
+          {
+            "range": "Sheet1!A3:A32",
+            "values": [
+              ["1"],["2"],["3"],["4"],["5"],["6"]
+            ]
+          }
+        ], 
+        valueInputOption: "RAW"
+      }
+    }, (err, response) => {
+      if (err) {
+        console.log('The API returned an error: ' + err);
+        return;
+      }
+    });
   }
 
   /**

@@ -17,6 +17,7 @@ export class IndexApi {
         // router.get('/gc/save/:activityId', this._saveActivity);
 
         router.get('/ss/read', _this.ReadSpreadSheet.bind(_this));
+        router.get('/ss/write', _this.WriteToSpreadSheet.bind(_this));
         router.get('/ss/post-auth', _this.GetPostAuth.bind(_this));
 
         router.get('/tcx/load/:activityId', _this.LoadActivity.bind(_this));
@@ -59,12 +60,28 @@ export class IndexApi {
 
     private async ReadSpreadSheet(req: Request, res: Response) {
         try {
-            let result = await googleSpreadSheetService.listMajors();
+            let result = await googleSpreadSheetService.getData();
+            res.json(result);
+            // if (result) {
+            //     res.redirect(result);
+            // }
+            // else {
+            //     res.send(result || 'Read SpreadSheet OK');
+            // }
+        }
+        catch(err) {
+            res.status(500).send(err);
+        }
+    }
+
+    private async WriteToSpreadSheet(req: Request, res: Response) {
+        try {
+            let result = await googleSpreadSheetService.createFrames();
             if (result) {
                 res.redirect(result);
             }
             else {
-                res.send(result || 'Read SpreadSheet OK');
+                res.send(result || 'Write SpreadSheet OK');
             }
         }
         catch(err) {
