@@ -42,6 +42,6 @@ Thumbs.db
 *.bak
 src/**/*.js
 
-google-generated-creds.json
 client_secret.json
+google_spread_sheet.json
 *.tcx

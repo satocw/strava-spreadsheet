@@ -6,17 +6,20 @@ var googleAuth = require('google-auth-library');
 var sheets = google.sheets('v4');
 
 // If modifying these scopes, delete your previously saved credentials
-// at ~/.credentials/sheets.googleapis.com-nodejs-quickstart.json
-var SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
+// at ~/.credentials/sheets.googleapis.activity-archiver.json
+var SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
 var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
     process.env.USERPROFILE) + '/.credentials/';
-var TOKEN_PATH = TOKEN_DIR + 'sheets.googleapis.com-nodejs-quickstart.json';
+var TOKEN_PATH = TOKEN_DIR + 'sheets.googleapis.activity-archiver.json';
 
 export class GoogleSpreadSheetService {
 
   private oauth2Client: any = null;
+  private spreadSheetId = null;
 
-  constructor() { }
+  constructor() {
+    this.setSpreadSheetId();
+  }
 
   private async setAuth(): Promise<string|true> {
     if (this.oauth2Client && this.oauth2Client.credentials) {
@@ -52,8 +55,8 @@ export class GoogleSpreadSheetService {
     }
     sheets.spreadsheets.values.get({
       auth: this.oauth2Client,
-      spreadsheetId: '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms',		// 1Q5SPHgW5BwdX31FX_vfHNx7bG3jj9pNew5tLJVDdXR0
-      range: 'Class Data!A2:E',
+      spreadsheetId: this.spreadSheetId,
+      range: 'Sheet1!A2:E',
     }, function(err, response) {
       if (err) {
         console.log('The API returned an error: ' + err);
@@ -98,6 +101,21 @@ export class GoogleSpreadSheetService {
           resolve(JSON.parse(token+''));
         }
       });
+    });
+  }
+
+  private setSpreadSheetId() {
+    fs.readFile(path.resolve(__dirname, '../google_spread_sheet.json'), (err, content) => {
+      if (err) {
+        console.log('Error loading google_spread_sheet.json file: ' + err);
+        throw err;
+      }
+      const json = JSON.parse(content+ '');
+      if (json && json.sheetId) {
+        this.spreadSheetId = json.sheetId;
+        return;
+      }
+      throw new Error('Error setting spreadsheet id');
     });
   }
 
