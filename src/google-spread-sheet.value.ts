@@ -31,3 +31,22 @@ export function headerCell(value: string) {
         }
     };
 }
+
+export function dateAndDays(year: number, month: number) {
+    
+}
+
+export function dateAndDay(year: number, month: number, date: number) {
+    return [
+        {
+            "userEnteredValue": {
+                "numberValue": date
+            }
+        },
+        {
+            "userEnteredValue": {
+                "stringValue": "月"
+            }
+        }
+    ];
+}

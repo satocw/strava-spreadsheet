@@ -4,7 +4,7 @@ import * as request from "request-promise-native";
 var google = require('googleapis');
 var googleAuth = require('google-auth-library');
 var sheets = google.sheets('v4');
-import { title as ssTitle, headerCell as ssHeaderCell } from './google-spread-sheet.value';
+import { title as ssTitle, headerCell as ssHeaderCell, dateAndDay as ssDateAndDay } from './google-spread-sheet.value';
 
 // If modifying these scopes, delete your previously saved credentials
 // at ~/.credentials/sheets.googleapis.activity-archiver.json
@@ -120,24 +120,24 @@ export class GoogleSpreadSheetService {
                     ssHeaderCell("190~"),
                     ssHeaderCell("メモ")
                   ]
+                }
+              ],
+              "fields": "*"
+            }
+          },
+          {
+            "updateCells": {
+              "start": {
+                "sheetId": 0,
+                "rowIndex": 2,
+                "columnIndex": 0
+              },
+              "rows": [
+                {
+                  "values": ssDateAndDay(2017, 12, 1)
                 },
                 {
-                  "values": [
-                    {
-                      "userEnteredValue": {
-                        "numberValue": "11"
-                      }
-                    }
-                  ]
-                },
-                {
-                  "values": [
-                    {
-                      "userEnteredValue": {
-                        "numberValue": "12"
-                      }
-                    }
-                  ]
+                  "values": ssDateAndDay(2017, 12, 2)
                 }
               ],
               "fields": "*"
