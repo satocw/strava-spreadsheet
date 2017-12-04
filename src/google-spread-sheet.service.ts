@@ -4,7 +4,7 @@ import * as request from "request-promise-native";
 var google = require('googleapis');
 var googleAuth = require('google-auth-library');
 var sheets = google.sheets('v4');
-import { title as ssTitle, headerCell as ssHeaderCell, dateAndDay as ssDateAndDay } from './google-spread-sheet.value';
+import { title as ssTitle, headerCell as ssHeaderCell, dateAndDays as ssDateAndDays } from './google-spread-sheet.value';
 
 // If modifying these scopes, delete your previously saved credentials
 // at ~/.credentials/sheets.googleapis.activity-archiver.json
@@ -132,14 +132,7 @@ export class GoogleSpreadSheetService {
                 "rowIndex": 2,
                 "columnIndex": 0
               },
-              "rows": [
-                {
-                  "values": ssDateAndDay(2017, 12, 1)
-                },
-                {
-                  "values": ssDateAndDay(2017, 12, 2)
-                }
-              ],
+              "rows": ssDateAndDays(2017, 12),
               "fields": "*"
             }
           }
