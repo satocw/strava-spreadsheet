@@ -72,6 +72,18 @@ function fromNumberToStringDay(day: number): string {
     }
 }
 
+function countDaysInMonth(year: number, month: number) {
+    let date = 29;     // どの月も28日まではある
+    while (true) {
+        const last = new Date(year, month - 1, date);
+        if (last.getMonth() !== month - 1) {    // 月が変わった
+            break;
+        }
+        ++date;
+    }
+    return --date;
+}
+
 /**
  * @return
  * [

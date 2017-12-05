@@ -80,6 +80,7 @@ export class GoogleSpreadSheetService {
       spreadsheetId: this.spreadSheetId,
       resource: {
         requests: [
+          // １行目と２行目
           {
             "updateCells": {
               "start": {
@@ -125,6 +126,7 @@ export class GoogleSpreadSheetService {
               "fields": "*"
             }
           },
+          // 日と曜日
           {
             "updateCells": {
               "start": {
