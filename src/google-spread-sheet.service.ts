@@ -4,7 +4,14 @@ import * as request from "request-promise-native";
 var google = require('googleapis');
 var googleAuth = require('google-auth-library');
 var sheets = google.sheets('v4');
-import { title as ssTitle, headerCell as ssHeaderCell, dateAndDays as ssDateAndDays, countDaysInMonth } from './google-spread-sheet.value';
+import {
+  title as ssTitle,
+  headerCell as ssHeaderCell,
+  dateAndDays as ssDateAndDays,
+  formatTime as ssFormatTime,
+  formatMeters as ssFormatMeters,
+  formatKilometers as ssFormatKilometers,
+  countDaysInMonth } from './google-spread-sheet.value';
 
 // If modifying these scopes, delete your previously saved credentials
 // at ~/.credentials/sheets.googleapis.activity-archiver.json
@@ -56,7 +63,7 @@ export class GoogleSpreadSheetService {
         spreadsheetId: this.spreadSheetId,
         includeGridData: true,
         ranges: [
-          "Sheet1!A1:D2"
+          "Sheet1!G3:I3"
         ]
       }, (err, response) => {
         if (err) {
@@ -223,7 +230,49 @@ export class GoogleSpreadSheetService {
           //       "endIndex": 2,
           //     }
           //   }
-          // }
+          // },
+          // セルのフォーマット(時間)
+          {
+            "updateCells": {
+              "range": {
+                "sheetId": 0,
+                "startRowIndex": 2,
+                "endRowIndex": 2 + daysInMonth,
+                "startColumnIndex": 6,    // G列
+                "endColumnIndex": 7
+              },
+              "rows": ssFormatTime(daysInMonth),
+              "fields": "userEnteredFormat.numberFormat"              
+            }
+          },
+          // セルのフォーマット(距離)
+          {
+            "updateCells": {
+              "range": {
+                "sheetId": 0,
+                "startRowIndex": 2,
+                "endRowIndex": 2 + daysInMonth,
+                "startColumnIndex": 7,    // H列
+                "endColumnIndex": 8
+              },
+              "rows": ssFormatKilometers(daysInMonth),
+              "fields": "userEnteredFormat.numberFormat"              
+            }
+          },
+          // セルのフォーマット(Asc)
+          {
+            "updateCells": {
+              "range": {
+                "sheetId": 0,
+                "startRowIndex": 2,
+                "endRowIndex": 2 + daysInMonth,
+                "startColumnIndex": 8,    // I列
+                "endColumnIndex": 9
+              },
+              "rows": ssFormatMeters(daysInMonth),
+              "fields": "userEnteredFormat.numberFormat"              
+            }
+          }
         ]
       }
     }, (err, response) => {

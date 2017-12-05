@@ -187,3 +187,54 @@ function dateAndDay(year: number, month: number, date: number) {
         ];
     }
 }
+
+export function formatTime(length: number) {
+    let arr: any[] = [];
+    for (let i = 0; i < length; ++i) {
+        arr.push([{
+            "values": {
+                "userEnteredFormat": {
+                    "numberFormat": {
+                        "type": "TIME",
+                        "pattern": "[h]\"時間\"mm\"分\"ss\"秒\""
+                    }
+                }
+            }
+        }]);
+    }
+    return arr;
+}
+
+export function formatMeters(length: number) {
+    let arr: any[] = [];
+    for (let i = 0; i < length; ++i) {
+        arr.push([{
+            "values": {
+                "userEnteredFormat": {
+                    "numberFormat": {
+                        "type": "NUMBER",
+                        "pattern": "0\\m"
+                    }
+                }
+            }
+        }]);
+    }
+    return arr;    
+}
+
+export function formatKilometers(length: number) {
+    let arr: any[] = [];
+    for (let i = 0; i < length; ++i) {
+        arr.push([{
+            "values": {
+                "userEnteredFormat": {
+                    "numberFormat": {
+                        "type": "NUMBER",
+                        "pattern": "0.00\\k\\m"
+                    }
+                }
+            }
+        }]);
+    }
+    return arr;    
+}
