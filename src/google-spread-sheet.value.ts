@@ -33,6 +33,28 @@ export function headerCell(value: string) {
                 "red": 0.9372549,
                 "green": 0.9372549,
                 "blue": 0.9372549
+            },
+            "borders": {
+                "top": {
+                  "style": "SOLID",
+                  "width": 1,
+                  "color": {}
+                },
+                "bottom": {
+                  "style": "DOUBLE",
+                  "width": 3,
+                  "color": {}
+                },
+                "left": {
+                  "style": "SOLID",
+                  "width": 1,
+                  "color": {}
+                },
+                "right": {
+                  "style": "SOLID",
+                  "width": 1,
+                  "color": {}
+                }
             }
         }
     };
@@ -72,7 +94,7 @@ function fromNumberToStringDay(day: number): string {
     }
 }
 
-function countDaysInMonth(year: number, month: number) {
+export function countDaysInMonth(year: number, month: number) {
     let date = 29;     // どの月も28日まではある
     while (true) {
         const last = new Date(year, month - 1, date);
@@ -97,16 +119,9 @@ function countDaysInMonth(year: number, month: number) {
  */
 export function dateAndDays(year: number, month: number) {
     let arr: any[] = [];
-    let date = 1;
-    while (true) {
+    const lastDate = countDaysInMonth(year, month);
+    for (let date = 1; date <= lastDate; ++date) {
         arr.push({ "values": dateAndDay(year, month, date) });
-        date++;
-        if (date > 28) {    // どの月も28日まではある
-            const last = new Date(year, month - 1, date);
-            if (last.getMonth() !== month - 1) {    // 月が変わった
-                break;
-            }
-        }
     }
     return arr;
 }

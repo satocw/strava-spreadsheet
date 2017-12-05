@@ -45,3 +45,5 @@ src/**/*.js
 client_secret.json
 google_spread_sheet.json
 *.tcx
+
+TODO.md

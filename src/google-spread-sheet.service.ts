@@ -4,7 +4,7 @@ import * as request from "request-promise-native";
 var google = require('googleapis');
 var googleAuth = require('google-auth-library');
 var sheets = google.sheets('v4');
-import { title as ssTitle, headerCell as ssHeaderCell, dateAndDays as ssDateAndDays } from './google-spread-sheet.value';
+import { title as ssTitle, headerCell as ssHeaderCell, dateAndDays as ssDateAndDays, countDaysInMonth } from './google-spread-sheet.value';
 
 // If modifying these scopes, delete your previously saved credentials
 // at ~/.credentials/sheets.googleapis.activity-archiver.json
@@ -69,12 +69,15 @@ export class GoogleSpreadSheetService {
   }
 
   public async createFrames() {
+    const year = 2017;  // TODO: パラメタ化する
+    const month = 12;   // TODO: パラメタ化する
     if (!this.oauth2Client) {
       const result = await this.setAuth();
       if (typeof result === 'string') {
         return result;
       }
     }
+    const daysInMonth = countDaysInMonth(year, month);
     sheets.spreadsheets.batchUpdate({
       auth: this.oauth2Client,
       spreadsheetId: this.spreadSheetId,
@@ -91,7 +94,7 @@ export class GoogleSpreadSheetService {
               "rows": [
                 {
                   "values": [
-                    ssTitle("12月")
+                    ssTitle(`${month}月`)
                   ],
                 },
                 {
@@ -134,8 +137,80 @@ export class GoogleSpreadSheetService {
                 "rowIndex": 2,
                 "columnIndex": 0
               },
-              "rows": ssDateAndDays(2017, 12),
+              "rows": ssDateAndDays(year, month),
               "fields": "*"
+            }
+          },
+          // 枠線
+          {
+            "updateBorders": {
+              "range": {
+                "sheetId": 0,
+                "startRowIndex": 2,
+                "endRowIndex": 2 + daysInMonth,
+                "startColumnIndex": 0,
+                "endColumnIndex": 24    // X列
+              },
+              // "top": {
+              //   "style": "SOLID",
+              //   "width": 1,
+              //   "color": {
+              //     "red": 0,
+              //     "green": 0,
+              //     "blue": 0,
+              //     "alpha": 0
+              //   }
+              // },
+              "bottom": {
+                "style": "SOLID",
+                "width": 1,
+                "color": {
+                  "red": 0,
+                  "green": 0,
+                  "blue": 0,
+                  "alpha": 0
+                }
+              },
+              "left": {
+                "style": "SOLID",
+                "width": 1,
+                "color": {
+                  "red": 0,
+                  "green": 0,
+                  "blue": 0,
+                  "alpha": 0
+                }
+              },
+              "right": {
+                "style": "SOLID",
+                "width": 1,
+                "color": {
+                  "red": 0,
+                  "green": 0,
+                  "blue": 0,
+                  "alpha": 0
+                }
+              },
+              "innerHorizontal": {
+                "style": "SOLID",
+                "width": 1,
+                "color": {
+                  "red": 0,
+                  "green": 0,
+                  "blue": 0,
+                  "alpha": 0
+                }        
+              },
+              "innerVertical": {
+                "style": "SOLID",
+                "width": 1,
+                "color": {
+                  "red": 0,
+                  "green": 0,
+                  "blue": 0,
+                  "alpha": 0
+                }   
+              }
             }
           }
         ]
