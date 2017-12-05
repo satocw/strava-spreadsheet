@@ -63,7 +63,7 @@ export class GoogleSpreadSheetService {
         spreadsheetId: this.spreadSheetId,
         includeGridData: true,
         ranges: [
-          "Sheet1!G3:I3"
+          "Sheet1!A1:C3"
         ]
       }, (err, response) => {
         if (err) {
@@ -271,6 +271,18 @@ export class GoogleSpreadSheetService {
               },
               "rows": ssFormatMeters(daysInMonth),
               "fields": "userEnteredFormat.numberFormat"              
+            }
+          },
+          // ２行を固定
+          {
+            "updateSheetProperties": {
+              "properties": {
+                "sheetId": 0,
+                "gridProperties": {
+                  "frozenRowCount": 2
+                }
+              },
+              "fields": "gridProperties.frozenRowCount"
             }
           }
         ]
