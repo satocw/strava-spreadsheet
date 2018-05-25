@@ -1,22 +1,31 @@
 {
-    // Use IntelliSense to learn about possible Node.js debug attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Launch Program",
-            "program": "${workspaceRoot}/dist/server.js",
-            "outFiles": [
-                "${workspaceRoot}/dist/**/*.js"
-            ],
-            "args": [
-                "--month=201709",
-                "--to=1q0lGO0LJi9blOKVi6ocXcuqEfzA3Nly1MP0aqfCvvWA"
-            ],
-            "preLaunchTask": "tsc"
-        }
-    ]
+  // Use IntelliSense to learn about possible Node.js debug attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Program",
+      "program": "${workspaceRoot}/dist/google-spread-sheet/oauth-client.js",
+      "outFiles": ["${workspaceRoot}/dist/**/*.js"],
+      "args": [
+        "--month=201709",
+        "--to=1q0lGO0LJi9blOKVi6ocXcuqEfzA3Nly1MP0aqfCvvWA"
+      ],
+      "preLaunchTask": "tsc"
+    },
+    {
+      "name": "Launch via NPM",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run-script", "debug"],
+      "port": 9229,
+      "preLaunchTask": "tsc: build - src\\tsconfig.json",
+      "sourceMaps": true
+    }
+  ]
 }
